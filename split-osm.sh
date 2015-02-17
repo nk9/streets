@@ -22,11 +22,14 @@ then
 		
 		# These steps could theoretically be skipped, but splitting the XML into different files for nodes and highways improves performance a lot. Trying to churn through 2 GB of XML for a city like Chicago causes problems.
 
-		sed -ne '/<node/p' $filename > "$filename.nodes.xml"
+        head -n 2 $filename > "$filename.nodes.xml"
+		sed -ne '/<node/p' $filename >> "$filename.nodes.xml"
+        tail -n 1 $filename >> "$filename.nodes.xml"
 		echo "Created nodes-only XML file: $filename.nodes.xml"	
 
 		#This works but leaves excess tags in: head -n 2 $filename > "$filename.ways.xml" && sed -ne '/<\/\?osm\|<\/\?way\|<\/\?nd\|<\/\?tag\|<?xml/p' $filename | sed -n '/<way/,$p' >> "$filename.ways.xml"
 		head -n 2 $filename > "$filename.ways.xml" && sed -ne '/<\/\?osm\|<\/\?way\|<nd\|<tag k="name\|<tag k="highway\|<tag k="tiger:name_type\|<tag k="tiger:name_base\|<?xml/p' $filename | sed 's/ \(timestamp\|version\|uid\|user\|changeset\)="[^"]\+"//g' | sed -n '/<way/,$p' >> "$filename.ways.xml"
+        tail -n 1 $filename >> "$filename.ways.xml"
 		echo "Created ways-only XML file: $filename.ways.xml"
 		
 		#Take out non-highway ways for faster processing
@@ -47,13 +50,13 @@ then
 		echo -n "Extracting nodes... "
 
 		#Slower method
-		#python extract-nodes.py "$filename.nodes.xml" > "$filename.nodes.tsv"
+		python extract-nodes.py "$filename.nodes.xml" > "$filename.nodes.tsv"
 
 		#Old brute force method
 		#sed -n '/<node/p' $filename.nodes.xml | sed 's/ \(timestamp\|version\|uid\|user\|changeset\)="[^"]\+"//g' | sed 's/ id="//g' | sed 's/<node//' | sed 's/" \(lat\|lon\)="/\t/g' | sed '/\/\?>//g' | sed 's/"\| //g' > $filename.nodes.tsv
 
 		#New brute force method
-		sed -n '/<node/p' $filename.nodes.xml | sed 's/ \(timestamp\|version\|uid\|user\|changeset\)="[^"]\+"//g' | sed 's/<node id="//g' | sed 's/\/\?>//g' | sed 's/" \(lat\|lon\)="/\t/g'  | sed 's/"\| //g' > $filename.nodes.tsv
+# 		sed -n '/<node/p' $filename.nodes.xml | sed 's/ \(timestamp\|version\|uid\|user\|changeset\)="[^"]\+"//g' | sed 's/<node id="//g' | sed 's/\/\?>//g' | sed 's/" \(lat\|lon\)="/\t/g'  | sed 's/"\| //g' > $filename.nodes.tsv
 		echo "Extracted nodes: $filename.nodes.tsv"
 
 		echo -n "Extracting ways... "
