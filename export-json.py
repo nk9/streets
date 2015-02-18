@@ -39,7 +39,7 @@ class Exporter(object):
 			street_id = str(row[0])
 			
 			street["name"] = str(row[1])
-			street["weight"] = int(row[2])
+			street["weight"] = min(int(row[2]), 4) # at most 4
 			street["polygon"] = 0
 			street["polyline"] = json.loads(str(row[3]))
 			street["dimensions"] = 2 if (int(row[4]) == 1) else 3
