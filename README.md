@@ -15,21 +15,9 @@ As an example, to bound the extract to the city limits of Seattle, you can do th
 
 1. Install Osmosis: http://wiki.openstreetmap.org/wiki/Osmosis
 
-2. Go to http://overpass-turbo.eu/, zoom to the Seattle area, and run a query to search for a relation with the name "Seattle":
-
-        <query type="relation">
-            <has-kv k="name" v="Seattle"/>
-            <bbox-query {{bbox}}/>
-        </query>
-        <union>
-            <item/>
-            <recurse type="down"/>
-        </union>    
-        <print/>
+2. Go to http://www.openstreetmap.org/, search for a relation named Islington. In this case, you're looking for "London Borough of Islington"
         
-3. If the boundary shown on the map looks right, click "Export," choose "Raw Data," and look through the export for the relation ID of Seattle:
-
-        <relation id="237385">
+3. When you find the right relation, copy its ID from between the parentheses in the sidebar: "(51827)"
 
 4. To get a .poly file based on the relation ID, use this handy tool: http://osm102.openstreetmap.fr/~jocelyn/polygons/index.py
 
